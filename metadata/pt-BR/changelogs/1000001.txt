@@ -1,3 +1,0 @@
-* Corrigido erro que remove apps dos repositórios (#568)
-
-* Atualizações de índice mais rápidas

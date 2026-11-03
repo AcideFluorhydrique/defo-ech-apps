@@ -1,3 +1,0 @@
-* Tarkvarahoidast rakenduse eemaldamisel tekkinud vea parandus (#568)
-
-* Palju kiirem indeksite uuendust

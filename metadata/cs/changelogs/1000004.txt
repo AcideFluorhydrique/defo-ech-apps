@@ -1,7 +1,0 @@
-* Na kartu Aktualizace byla přidána gesta přejetím prstu
-
-* Zobrazení varování s akcemi na kartě Aktualizace pro KnownVulns
-
-* Aktualizace překladů
-
-* Opravy tmavého rozhraní

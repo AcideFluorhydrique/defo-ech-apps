@@ -1,3 +1,0 @@
-* Corregir l'error que eliminava les aplicacions dels dipòsits (# 568)
-
-* Actualitzacions d'índexs molt més ràpides

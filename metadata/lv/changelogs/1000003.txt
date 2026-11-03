@@ -1,3 +1,0 @@
-* Lieli lietotāja saskarnes veiktspējas uzlabojumi, īpaši ar iespējotu arhīvu
-
-* Novērstas kļūdas, kas izraisīja avārijas

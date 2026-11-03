@@ -1,3 +1,0 @@
-* Velká vylepšení rozhraní, hlavně s povoleným archivem
-
-* Opraveny chyby v crasheru

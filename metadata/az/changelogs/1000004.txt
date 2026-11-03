@@ -1,7 +1,0 @@
-* Sürüşdürmə jestləri Yeniləmələr tabına əlavə edildi
-
-* KnownVulns üçün Yeniləmələr tabında hərəkətlərlə xəbərdarlıqları göstərin
-
-* Tərcümələr yeniləndi
-
-*Qaranlıq UI düzəlişləri

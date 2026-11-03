@@ -1,3 +1,0 @@
-* Geupdatete vertalingen
-* Knopgrootte probleem opgelost #1678
-* Willkeurige crashes op de achtergrond opgelost

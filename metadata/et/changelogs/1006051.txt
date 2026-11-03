@@ -1,3 +1,0 @@
-* Tõlgete uuendused
-* Nupu suuruse parandused (vearaport #1678)
-* Parandasime taustal toimunud juhuslikud kokkujooksmised

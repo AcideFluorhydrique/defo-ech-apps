@@ -1,3 +1,0 @@
-* Uygulamaları depolardan kaldırırken oluşan hatayı düzeltmesi (#568)
-
-* Çok daha hızlı indeks güncellemeleri

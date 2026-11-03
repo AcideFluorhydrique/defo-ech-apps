@@ -1,7 +1,0 @@
-* Estä HTTP ETag -tietueen käyttö seurantaevästeenä
-
-* Parrannettu kuvankaappausasettelu
-
-* Tyhjennä väliaikaiset ja välimuistissa olevat tiedostot perusteellisesti
-
-* Tumman tilan korjauksia

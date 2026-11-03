@@ -1,7 +1,0 @@
-* HTTP ETag-ın izləmə kuki kimi istifadə edilməsinin qarşısı alındı
-
-* Ekran görüntülərinin təkmilləşdirilmiş yeri
-
-* Müvəqqəti faylların və keşin düzgün təmizlənməsi
-
-* Tünd temanın düzəldilməsi

@@ -1,3 +1,0 @@
-* Aktualizovány překlady
-* Opraveny problémy s velikostí tlačítek #1678
-* Zastaveny náhodné pády na pozadí

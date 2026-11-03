@@ -1,3 +1,0 @@
-* Malakihang pagpapahusay sa performance ng UI, lalo na kapag nakabukas ang mga archive
-
-* Inayos ang mga bug na nagpapa-crash

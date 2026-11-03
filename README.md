@@ -1,82 +1,81 @@
-# F-Droid Client
 
-[![build status](https://gitlab.com/fdroid/fdroidclient/badges/master/pipeline.svg)](https://gitlab.com/fdroid/fdroidclient/-/jobs)
-[![Translation status](https://hosted.weblate.org/widgets/f-droid/-/svg-badge.svg)](https://hosted.weblate.org/engage/f-droid/)
+This is a demo fork of F-Droid to serve as an example app built on the
+development fork of Conscrypt which supports TLS Encrypted ClientHello (ECH).
+ECH is the next version of the TLS protocol that encrypts internet traffic and
+puts the "S" in HTTPS.  It makes it possible to encrypt all of the metadata that
+is possible to encrypt in the TLS negogiation. It is a test case for
+interoperability between various implementations, platforms, and networks.
 
-Client for [F-Droid](https://f-droid.org), the Free Software repository system
-for Android.
+The Encrypted ClientHello (ECH) mechanism (IETF draft spec) is a way to plug a
+few privacy-holes that remain in the Transport Layer Security (TLS) protocol
+that's used as the security layer for the web. OpenSSL is a widely used library
+that provides an implementation of the TLS protocol. The DEfO project is
+developing an implementation of ECH for OpenSSL, and various clients and servers
+that use OpenSSL as a demonstration and for interoperability testing.
 
-## Building with Gradle
+DEfO was initially funded by the Open Technology Fund, and subsequently by the
+National Democratic Initiative. Tolerant Networks Ltd. and people from the
+Guardian Project are doing the work in DEfO.
 
-    ./gradlew assembleRelease
+## This fork
 
-## Direct download
+This is based on the current [F-Droid client](https://gitlab.com/fdroid/fdroidclient)
+(2.0.3). All DEfO-specific changes live in the `defo` product flavor, so that
+the fork can be kept in sync with upstream with few conflicts:
 
-You can [download the application](https://f-droid.org/F-Droid.apk) directly
-from our site or [browse it in the repo](https://f-droid.org/app/org.fdroid.fdroid).
+* `app/src/defo/` holds the code, resources and the default repositories,
+  `app/src/fullDefo/` and `app/src/basicDefo/` set the app name.
+* `app/build.gradle.kts` adds the `defo` flavor (in the `release` dimension),
+  the Conscrypt dependency and keeps the `ie.defo.ech_apps` application ID.
+* `app/src/main/kotlin/org/fdroid/download/DownloadModule.kt` has a small hook
+  that lets the flavor provide its own `MirrorChooser`.
+* `gradle/verification-metadata.xml` has the checksum of the Conscrypt AAR.
 
-## Coding style
+Build the app with:
 
-This project uses [ktfmt](https://github.com/facebook/ktfmt) and enforces it via CI.
-You can run the following to auto-format your changes:
+    ./gradlew assembleFullDefoDebug
 
-    ./gradlew ktfmtFormat
+To pull in the latest upstream changes:
 
-## Libraries
+    git remote add upstream https://gitlab.com/fdroid/fdroidclient.git
+    git fetch upstream
+    git merge upstream/master
 
-Core F-Droid functionality is split into re-usable libraries
-to make using F-Droid technology in your own projects as easy as possible.
+Upstream's store listing in `metadata/` is replaced by the DEfO one here, and
+this README is DEfO-specific, so merges may report conflicts for those files.
+Before committing the merge, reset them to this fork's version:
 
-[More information about libraries](libs/README.md)
+    git rm -r -q -f metadata README.md
+    git checkout HEAD -- metadata README.md
 
-## Contributing
+## How it works
 
-See our [Contributing doc](CONTRIBUTING.md) for information on how to report
-issues, translate the app into your language or help with development.
+* `ConscryptInitProvider` installs the Guardian Project development build of
+  [Conscrypt](https://github.com/google/conscrypt) with ECH support as the
+  first security provider before the app starts.
+* When opening a TLS connection, this Conscrypt looks up the HTTPS DNS record
+  (type 65) of the host through the system resolver (`android.net.DnsResolver`)
+  and uses ECH if the record contains an ECHConfigList. Otherwise it falls back
+  to a normal TLS handshake with a plaintext SNI.
+* The F-Droid repositories use `https://cloudflare.f-droid.org` as their
+  address. When no proxy is set, requests that can be served by that mirror
+  only go there (`EchMirrorChooser`), so no plaintext SNI is sent to any other
+  mirror.
+* Long-press the app icon and choose "ECH check" to fetch
+  `https://cloudflare.f-droid.org/cdn-cgi/trace`. It shows whether Cloudflare
+  saw `sni=encrypted` or `sni=plaintext`, and which TLS providers are in use.
 
-## IRC
+## Known limitations
 
-We are on `#fdroid` and `#fdroid-dev` on OFTC. We hold weekly dev meetings
-on `#fdroid-dev` on Thursdays at 11:30h UTC, which usually last half an hour.
-
-## FAQ
-
-* Why does F-Droid require "Unknown Sources" to install apps by default?
-
-Because a regular Android app cannot act as a package manager on its
-own. To do so, it would require system privileges (see below), similar
-to what Google Play does.
-
-* Can I avoid enabling "Unknown Sources" by installing F-Droid as a
-  privileged system app?
-
-This used to be the case, but no longer is. Now the [Privileged
-Extension](https://gitlab.com/fdroid/privileged-extension) is the one that should be placed in
-the system. It can be bundled with a ROM or installed via a zip.
-
-## License
-
-This program is Free Software: You can use, study share and improve it at your
-will. Specifically you can redistribute and/or modify it under the terms of the
-[GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
-published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Some icons are made by [Picol](http://www.flaticon.com/authors/picol),
-[Icomoon](http://www.flaticon.com/authors/icomoon) or
-[Dave Gandy](http://www.flaticon.com/authors/dave-gandy) from
-[Flaticon](http://www.flaticon.com) or by Google and are licensed by
-[Creative Commons BY 3.0](https://creativecommons.org/licenses/by/3.0/).
-
-Other icons are from the
-[Material Design Icon set](https://github.com/google/material-design-icons)
-released under an
-[Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/).
-
-
-## Translation
-
-Everything can be translated.  See
-[Translation and Localization](https://f-droid.org/docs/Translation_and_Localization)
-for more info.
-[![translation status](https://hosted.weblate.org/widgets/f-droid/-/f-droid/multi-auto.svg)](https://hosted.weblate.org/engage/f-droid/?utm_source=widget)
+* ECH needs Android 10 or newer, and a DNS resolver that returns the HTTPS
+  records of `cloudflare.f-droid.org` unmodified (e.g. a DoH resolver).
+* The Conscrypt build is a development snapshot from 2022. Its native library
+  is not 16 KB page aligned, so on devices with 16 KB memory pages it cannot be
+  loaded and the app falls back to the platform TLS provider (without ECH).
+* ECH rejections are not retried with the retry configs sent by the server.
+* Conscrypt also provides the certificate verification (trusting system and
+  user CAs), so the Certificate Transparency rules of
+  `network_security_config.xml` do not apply in this flavor.
+* The HTTPS record lookup goes through the system resolver even when a proxy
+  such as Tor is configured, which reveals the hostnames of HTTPS mirrors to
+  the DNS resolver.

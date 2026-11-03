@@ -1,5 +1,0 @@
-* Totale revisie van downloadlogica voor verbeterde prestaties en ondersteuning van mirrors.
-
-* Schermafbeeldingen en graphics worden nu gedownload uit mirrors.
-
-* Een privacylek met TLS Sessies gereduceerd

@@ -1,0 +1,3 @@
+* Rebased on F-Droid 2.0.3, with the new user interface.
+* Downloads from the F-Droid repositories only use the Cloudflare mirror with ECH, unless a proxy is set.
+* Long-press the app icon and choose "ECH check" to see whether Cloudflare saw an encrypted ClientHello.

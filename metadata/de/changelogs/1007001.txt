@@ -1,5 +1,0 @@
-* Die „Direktübertragung“ beim Verwenden des Hotspot-APs des Geräts überarbeitet
-
-* Neue Panikreaktionen hinzugefügt: Apps deinstallieren und Repos auf Standardeinstellungen zurücksetzen
-
-* Proxy-Unterstützung beim ersten Start korrigiert

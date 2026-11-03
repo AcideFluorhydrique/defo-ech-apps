@@ -1,3 +1,0 @@
-* Oprava předvoleb vyhledávacího panelu na posledních verzích systému Android (díky @dkanada)
-* Zpracování rozdělení oprávnění API 29: jemné umístění nyní znamená hrubé umístění
-* Definovat pravidla pro zálohování, aby se zabránilo ukládání odkládacího repozitáře

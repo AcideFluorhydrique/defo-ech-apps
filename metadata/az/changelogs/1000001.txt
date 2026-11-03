@@ -1,3 +1,0 @@
-* Repozitoridən proqramların silinməsi ilə bağlı səhvin aradan qaldırması (#568)
-
-* Əhəmiyyətli dərəcədə sürətləndirilmiş indeks yeniləmələri

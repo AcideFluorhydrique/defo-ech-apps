@@ -1,3 +1,0 @@
-* Terjemahan yang telah diperbaharui
-* Memperbaiki masalah ukuran tombol #1678
-* Menghentikan kerusakan latar belakang secara acak

@@ -1,3 +1,0 @@
-* Åtgärda sökfältsinställningen på senare Android-versioner (tack @dkanada)
-* Hantera API 29 delade behörigheter: fin lokalisering innebär nu grov lokalisering
-* Definiera säkerhetskopieringsregler för att undvika att spara växlingsrepo

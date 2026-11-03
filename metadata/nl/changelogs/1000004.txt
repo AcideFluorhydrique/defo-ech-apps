@@ -1,7 +1,0 @@
-* Veeggebaren toegevoegd aan het tabblad Updates
-
-* Geef waarschuwingen weer met acties op het tabblad Updates voor KnownVulns
-
-* Vertalingen bijgewerkt
-
-* Correcties aan Donker thema
