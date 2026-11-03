@@ -47,6 +47,8 @@ acra = "5.14.2"
 # full only
 material = "1.14.0"
 guardianprojectPanic = "1.0"
+# development build of Conscrypt with TLS Encrypted ClientHello (ECH) support, used by the defo flavor
+guardianprojectConscrypt = "2.6.alpha1647601986.job2220801545"
 commonsIo = "2.22.0"
 commonsNet = "3.13.0"
 bouncycastle = "1.86"
@@ -126,6 +128,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 molecule-runtime = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
 compose-hints = { module = "com.viktormykhailiv:compose-hints", version.ref = "hints" }
 compose-preference = { module = "me.zhanghai.compose.preference:preference", version.ref = "composePreference" }
+guardianproject-conscrypt = { module = "info.guardianproject.conscrypt:conscrypt-android", version.ref = "guardianprojectConscrypt" }
 guardianproject-panic = { module = "info.guardianproject.panic:panic", version.ref = "guardianprojectPanic" }
 nanohttpd = { module = "org.nanohttpd:nanohttpd", version.ref = "nanohttpd" }
 jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }

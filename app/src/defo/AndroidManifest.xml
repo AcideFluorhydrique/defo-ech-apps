@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Installs Conscrypt with ECH support before Application.onCreate() -->
+        <provider
+            android:name="org.fdroid.defo.ConscryptInitProvider"
+            android:authorities="${applicationId}.defo.conscrypt"
+            android:exported="false"
+            android:initOrder="1000" />
+
+        <!-- Shows whether Cloudflare saw an Encrypted ClientHello, reachable via launcher shortcut -->
+        <activity
+            android:name="org.fdroid.defo.EchCheckActivity"
+            android:exported="false"
+            android:label="@string/defo_ech_check_title"
+            android:theme="@style/Theme.AppCompat.DayNight" />
+    </application>
+
+</manifest>

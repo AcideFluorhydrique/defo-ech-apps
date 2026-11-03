@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="defo_ic_launcher_background">#FFFFFFFF</color>
+
+    <string name="defo_ech_check_title" translatable="false">ECH check</string>
+    <string name="defo_ech_check_running" translatable="false">Connecting to cloudflare.f-droid.org…</string>
+    <string name="defo_ech_check_encrypted" translatable="false">🎉 Encrypted ClientHello (ECH) was used, the hostname was not sent in plaintext.</string>
+    <string name="defo_ech_check_plaintext" translatable="false">😱 No ECH, the hostname was sent in plaintext (SNI).</string>
+    <string name="defo_ech_check_unknown" translatable="false">Could not tell whether ECH was used.</string>
+    <string name="defo_ech_check_error" translatable="false">Error connecting to cloudflare.f-droid.org:\n%1$s</string>
+    <string name="defo_ech_check_conscrypt_installed" translatable="false">TLS provider: Conscrypt with ECH support</string>
+    <string name="defo_ech_check_conscrypt_missing" translatable="false">TLS provider: platform default (Conscrypt with ECH support could not be loaded on this device)</string>
+</resources>

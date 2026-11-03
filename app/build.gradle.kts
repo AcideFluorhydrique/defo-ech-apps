@@ -65,6 +65,9 @@ android {
       versionNameSuffix = "-$gitHash"
       applicationIdSuffix = ".nightly"
     }
+    // DEfO ECH Apps: uses a development build of Conscrypt with TLS Encrypted ClientHello (ECH)
+    // and the Cloudflare mirror of f-droid.org, see app/src/defo/
+    create("defo") { dimension = "release" }
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -95,6 +98,13 @@ androidComponents {
       // so we can test proguard minification in production
       variantBuilder.enable = false
     }
+  }
+  // keep the application ID of the existing DEfO ECH Apps (ie.defo.ech_apps) release,
+  // instead of the org.fdroid.* IDs of the variant flavors
+  onVariants(selector().withFlavor("release" to "defo")) { variant ->
+    val variantSuffix = if (variant.flavorName.orEmpty().startsWith("basic")) ".basic" else ""
+    val debugSuffix = if (variant.buildType == "debug") ".debug" else ""
+    variant.applicationId.set("ie.defo.ech_apps$variantSuffix$debugSuffix")
   }
 }
 
@@ -158,6 +168,8 @@ dependencies {
   "fullImplementation"(libs.nanohttpd)
   "fullImplementation"(libs.commons.io)
   "fullImplementation"(libs.commons.net)
+
+  "defoImplementation"(libs.guardianproject.conscrypt)
 
   testImplementation(libs.junit)
   testImplementation(kotlin("test"))
