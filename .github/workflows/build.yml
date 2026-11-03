@@ -1,0 +1,69 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      # upstream's Git LFS files (screenshot test references) are not part of this fork
+      GIT_LFS_SKIP_SMUDGE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          submodules: false
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Android SDK packages
+        # same packages as upstream's .gitlab-ci.yml
+        run: |
+          ANDROID_COMPILE_SDK=$(sed -n 's,.*compileSdk = "\([0-9][0-9]*\)".*,\1,p' gradle/libs.versions.toml)
+          echo "compileSdk: $ANDROID_COMPILE_SDK"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses > /dev/null
+          "$SDKMANAGER" --install \
+            "build-tools;${ANDROID_COMPILE_SDK}.0.0" \
+            "platform-tools" \
+            "platforms;android-${ANDROID_COMPILE_SDK}.0" > /dev/null
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Check formatting
+        run: ./gradlew --no-daemon :app:ktfmtCheck
+
+      - name: Build DEfO ECH Apps
+        run: ./gradlew --no-daemon :app:assembleFullDefoDebug :app:assembleFullDefoRelease
+
+      - name: Build upstream variant (unchanged behavior)
+        run: ./gradlew --no-daemon :app:assembleFullDefaultDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ech-apps-apks
+          path: app/build/outputs/apk/fullDefo/**/*.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-reports
+          path: |
+            app/build/reports
+            build/reports
+          if-no-files-found: ignore
