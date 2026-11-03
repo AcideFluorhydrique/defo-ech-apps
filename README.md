@@ -42,11 +42,14 @@ To pull in the latest upstream changes:
     git merge upstream/master
 
 Upstream's store listing in `metadata/` is replaced by the DEfO one here, and
-this README is DEfO-specific, so merges may report conflicts for those files.
-Before committing the merge, reset them to this fork's version:
+this README is DEfO-specific. Upstream's screenshot test references and
+F-Droid Basic store images are stored in Git LFS, which can't be pushed to a
+GitHub fork, so they are removed here. Merges may report conflicts for those
+files, so before committing a merge, reset them to this fork's version:
 
-    git rm -r -q -f metadata README.md
-    git checkout HEAD -- metadata README.md
+    git rm -r -q -f --ignore-unmatch metadata README.md .gitattributes \
+        'app/src/screenshotTest*/reference/*' 'src/basic/fastlane/metadata/android/*/images/*'
+    git checkout HEAD -- metadata README.md .gitattributes
 
 ## How it works
 
