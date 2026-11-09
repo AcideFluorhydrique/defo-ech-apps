@@ -47,6 +47,9 @@ jobs:
       - name: Check formatting
         run: ./gradlew --no-daemon :app:ktfmtCheck
 
+      - name: Test DEfO code
+        run: ./gradlew --no-daemon :app:testFullDefoDebugUnitTest --tests 'org.fdroid.defo.*'
+
       - name: Build DEfO ECH Apps
         run: ./gradlew --no-daemon :app:assembleFullDefoDebug :app:assembleFullDefoRelease
 
@@ -65,5 +68,6 @@ jobs:
           name: build-reports
           path: |
             app/build/reports
+            app/build/test-results
             build/reports
           if-no-files-found: ignore

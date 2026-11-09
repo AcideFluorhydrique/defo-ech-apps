@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.plugins.ResponseException
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.URLBuilder
+import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import java.io.IOException
 import javax.inject.Singleton
@@ -18,17 +20,28 @@ import org.fdroid.download.MirrorParameterManager
 import org.fdroid.download.NoResumeException
 
 /**
- * Hosts that are known to support TLS Encrypted ClientHello (ECH). When a request can be served by
- * one of these, only these get used, so that no connection with a plaintext SNI gets made to any of
- * the other mirrors.
+ * Mirror hosts mapped to the host of an equivalent mirror that supports TLS Encrypted ClientHello
+ * (ECH), serving the same paths.
+ *
+ * The F-Droid repositories keep https://f-droid.org as their address, because every index update
+ * resets the repository address and the official mirrors to what the index says, and the index does
+ * not list the Cloudflare mirror. So the ECH mirror gets derived from the f-droid.org mirror of
+ * each request instead. If the user disabled the f-droid.org mirror, it is not in the request, and
+ * the user's choice of mirrors is respected.
  */
-internal val ECH_HOSTS = setOf("cloudflare.f-droid.org")
+internal val ECH_ALTERNATIVE_HOSTS = mapOf("f-droid.org" to "cloudflare.f-droid.org")
 
 /**
- * A [MirrorChooser] that only uses the [ECH_HOSTS] mirrors when a [DownloadRequest] contains any of
- * them and no proxy is used. For all other requests (e.g. third-party repositories), it behaves
- * like the default mirror chooser of `libs/download` (`MirrorChooserWithParameters`), which is
- * internal to that library and thus re-implemented here.
+ * Hosts that are known to support ECH. When a request can be served by one of these, only these get
+ * used, so that no connection with a plaintext SNI gets made to any of the other mirrors.
+ */
+internal val ECH_HOSTS = ECH_ALTERNATIVE_HOSTS.values.toSet()
+
+/**
+ * A [MirrorChooser] that only uses ECH mirrors (see [ECH_HOSTS] and [ECH_ALTERNATIVE_HOSTS]) when a
+ * [DownloadRequest] can be served by any of them and no proxy is used. For all other requests (e.g.
+ * third-party repositories), it behaves like the default mirror chooser of `libs/download`
+ * (`MirrorChooserWithParameters`), which is internal to that library and thus re-implemented here.
  */
 class EchMirrorChooser(private val mirrorParameterManager: MirrorParameterManager?) :
   MirrorChooser {
@@ -181,14 +194,25 @@ class EchMirrorChooser(private val mirrorParameterManager: MirrorParameterManage
 
   internal companion object {
     /**
-     * Returns only the mirrors on [ECH_HOSTS], if [mirrors] contains any of them, otherwise returns
-     * [mirrors] unchanged.
+     * Returns only the ECH mirrors, if [mirrors] contains any of them or a mirror that has an ECH
+     * alternative (see [ECH_ALTERNATIVE_HOSTS]), otherwise returns [mirrors] unchanged.
      */
     fun filterEchMirrors(mirrors: List<Mirror>): List<Mirror> {
-      val echMirrors = mirrors.filter { mirror ->
-        !mirror.isIpfsGateway && mirror.url.host.lowercase() in ECH_HOSTS
-      }
-      return echMirrors.ifEmpty { mirrors }
+      val echMirrors =
+        mirrors.filter { mirror ->
+          !mirror.isIpfsGateway && mirror.url.host.lowercase() in ECH_HOSTS
+        } + mirrors.mapNotNull { mirror -> mirror.toEchAlternative() }
+      return echMirrors.distinctBy { it.url.toString() }.ifEmpty { mirrors }
+    }
+
+    /**
+     * Returns the same mirror on the ECH host from [ECH_ALTERNATIVE_HOSTS], or null if there is
+     * none. IP address hints are not copied, as they are for the other host.
+     */
+    private fun Mirror.toEchAlternative(): Mirror? {
+      if (isIpfsGateway || url.protocol != URLProtocol.HTTPS) return null
+      val echHost = ECH_ALTERNATIVE_HOSTS[url.host.lowercase()] ?: return null
+      return Mirror(URLBuilder(url).apply { host = echHost }.buildString())
     }
   }
 }

@@ -23,7 +23,7 @@ This is based on the current [F-Droid client](https://gitlab.com/fdroid/fdroidcl
 (2.0.3). All DEfO-specific changes live in the `defo` product flavor, so that
 the fork can be kept in sync with upstream with few conflicts:
 
-* `app/src/defo/` holds the code, resources and the default repositories,
+* `app/src/defo/` holds the code and resources, `app/src/testDefo/` its tests,
   `app/src/fullDefo/` and `app/src/basicDefo/` set the app name.
 * `app/build.gradle.kts` adds the `defo` flavor (in the `release` dimension),
   the Conscrypt dependency and keeps the `ie.defo.ech_apps` application ID.
@@ -60,10 +60,13 @@ files, so before committing a merge, reset them to this fork's version:
   (type 65) of the host through the system resolver (`android.net.DnsResolver`)
   and uses ECH if the record contains an ECHConfigList. Otherwise it falls back
   to a normal TLS handshake with a plaintext SNI.
-* The F-Droid repositories use `https://cloudflare.f-droid.org` as their
-  address. When no proxy is set, requests that can be served by that mirror
-  only go there (`EchMirrorChooser`), so no plaintext SNI is sent to any other
-  mirror.
+* When no proxy is set, requests to the F-Droid repositories only go to
+  `https://cloudflare.f-droid.org` (`EchMirrorChooser`), so no plaintext SNI
+  is sent to any other mirror. The repositories keep `f-droid.org` as their
+  address, because each index update resets the address and the official
+  mirrors to what the index says. Instead, the Cloudflare mirror is used in
+  place of the `f-droid.org` mirror, unless that one has been disabled in the
+  repository settings.
 * Long-press the app icon and choose "ECH check" to fetch
   `https://cloudflare.f-droid.org/cdn-cgi/trace`. It shows whether Cloudflare
   saw `sni=encrypted` or `sni=plaintext`, and which TLS providers are in use.
